@@ -14,39 +14,37 @@ https://developers.google.com/maps/documentation/android/map#using_xml_attribute
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:name="com.google.android.gms.maps.SupportMapFragment"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Botao 1"
-            android:id="@+id/button" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Botao 2"
-            android:id="@+id/button2" android:layout_below="@+id/button" android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
-    <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Manhã"
-            android:textColor="@color/text_color"
-            android:id="@+id/checkBox" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/button"
-            android:checked="false"/>
-    <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tarde"
-            android:textColor="@color/text_color"
-            android:id="@+id/checkBox2" android:layout_below="@+id/checkBox" android:layout_toRightOf="@+id/button"
-            android:checked="false"/>
-    <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Noite"
-            android:textColor="@color/text_color"
-            android:id="@+id/checkBox3" android:layout_below="@+id/checkBox2" android:layout_toRightOf="@+id/button2"
-            android:checked="false"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:layout_below="@+id/checkManha"
+            android:layout_alignParentLeft="true" android:layout_alignParentStart="true" android:background="#80000000">
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manhã"
+                android:id="@+id/checkManha" android:layout_alignParentTop="true"
+                android:checked="true"/>
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tarde"
+                android:id="@+id/checkTarde"
+                android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkManha"/>
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Noite"
+                android:id="@+id/checkNoite"
+                android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkTarde"/>
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Madrugada"
+                android:id="@+id/checkMadrugada"
+                android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkNoite"/>
+    </LinearLayout>
 
 </RelativeLayout>
 

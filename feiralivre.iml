@@ -2,9 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android" name="Android">
-      <configuration>
-        <option name="LIBRARY_PROJECT" value="true" />
-      </configuration>
+      <configuration />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -15,6 +13,9 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="google-play-services" level="project" />
+    <orderEntry type="module" module-name="google-play-services_lib" />
   </component>
 </module>
 

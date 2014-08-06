@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.arquitetaweb.feira.dto.FeiraModel;
@@ -17,11 +19,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 
 import javax.xml.parsers.FactoryConfigurationError;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends FragmentActivity {
     private GoogleMap mMap;
     private Marker marker;
+    private FeiraModel[] feiras;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,7 +35,73 @@ public class MainActivity extends FragmentActivity {
         mMap.setOnMyLocationChangeListener(myLocationChangeListener);
         mMap.setOnMapLongClickListener(myMapLongClickListener);
         mMap.setOnInfoWindowClickListener(myInfoWindowClickListener);
-        mMap.setInfoWindowAdapter(myInfoWindowAdapter);
+        //mMap.setInfoWindowAdapter(myInfoWindowAdapter);
+        actionsCheckBox();
+    }
+
+    private void actionsCheckBox() {
+        final CheckBox checkManha = (CheckBox)findViewById(R.id.checkManha);
+        final CheckBox checkTarde = (CheckBox)findViewById(R.id.checkTarde);
+        final CheckBox checkNoite = (CheckBox)findViewById(R.id.checkNoite);
+        final CheckBox checkMadrugada = (CheckBox)findViewById(R.id.checkMadrugada);
+
+        checkManha.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    carregarListaDeFeiras(PeriodEnum.Manha);
+                } else {
+                    mMap.clear();
+                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
+                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
+                    if (checkMadrugada.isChecked()) carregarListaDeFeiras(PeriodEnum.Madrugada);
+                }
+            }
+        });
+
+        checkTarde.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    carregarListaDeFeiras(PeriodEnum.Tarde);
+                } else {
+                    mMap.clear();
+                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
+                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
+                    if (checkMadrugada.isChecked())  carregarListaDeFeiras(PeriodEnum.Madrugada);
+                }
+            }
+        });
+
+
+        checkNoite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    carregarListaDeFeiras(PeriodEnum.Noite);
+                } else {
+                    mMap.clear();
+                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
+                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
+                    if (checkMadrugada.isChecked()) carregarListaDeFeiras(PeriodEnum.Madrugada);
+                }
+            }
+        });
+
+
+        checkMadrugada.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    carregarListaDeFeiras(PeriodEnum.Madrugada);
+                } else {
+                    mMap.clear();
+                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
+                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
+                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
+                }
+            }
+        });
     }
 
     @Override
@@ -55,19 +125,41 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void carregarListaDeFeiras() {
+        if (marker != null) { // remove marcador de inserção
+            marker.remove();
+        }
+
         AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask().execute("https://feiralivre.herokuapp.com/api/feira");
         try {
-            FeiraModel[] feiras = task.get();
+            feiras = task.get();
             for (FeiraModel feira : feiras) {
-                mMap.addMarker(new MarkerOptions()
+
+                MarkerOptions mkO = new MarkerOptions()
                         .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
-                        //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
+                                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
                         .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
                         .snippet(feira.getInformation())
-                        .title(feira.getDescription()));
+                        .title(feira.getDescription());
+
+                mMap.addMarker(mkO);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void carregarListaDeFeiras(PeriodEnum period) {
+        for (FeiraModel feira : feiras) {
+            if (feira.getPeriod().equals(period)) {
+                MarkerOptions mkO = new MarkerOptions()
+                        .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
+                                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
+                        .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
+                        .snippet(feira.getInformation())
+                        .title(feira.getDescription());
+
+                mMap.addMarker(mkO);
+            }
         }
     }
 
@@ -123,6 +215,7 @@ public class MainActivity extends FragmentActivity {
                 FeiraModel feiraObj = new FeiraModel();
                 feiraObj.setLatitude(marker.getPosition().latitude);
                 feiraObj.setLongitude(marker.getPosition().longitude);
+                feiraObj.setConfirmed(false);
 
                 intent.putExtra("feira", feiraObj);
                 startActivityForResult(intent, 100);
@@ -154,5 +247,10 @@ public class MainActivity extends FragmentActivity {
             return null;
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        carregarListaDeFeiras();
+    }
 
 }
