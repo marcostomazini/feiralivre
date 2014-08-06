@@ -1,4 +1,4 @@
-package com.com.arquitetaweb.feira.enummodel;
+package com.arquitetaweb.feira.enummodel;
 
 /**
  * Created by publisoft on 31/07/2014.

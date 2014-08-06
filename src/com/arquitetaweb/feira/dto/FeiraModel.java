@@ -1,6 +1,6 @@
 package com.arquitetaweb.feira.dto;
 
-import com.com.arquitetaweb.feira.enummodel.PeriodEnum;
+import com.arquitetaweb.feira.enummodel.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 

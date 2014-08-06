@@ -1,4 +1,4 @@
-package com.example.hellomap;
+package com.arquitetaweb.feira;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -12,8 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import com.arquitetaweb.feira.dto.FeiraModel;
-import com.com.arquitetaweb.feira.enummodel.PeriodEnum;
-import com.example.hellomap.R;
+import com.arquitetaweb.feira.enummodel.PeriodEnum;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;

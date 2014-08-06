@@ -1,4 +1,4 @@
-package com.example.hellomap;
+package com.arquitetaweb.feira;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,37 +11,31 @@ import org.springframework.web.client.RestTemplate;
  * Created by Marcos on 04/08/2014.
  */
 
-public class RestFeiraAddTask extends AsyncTask<Object, Void, Boolean>{
-
+public class RestFeiraTask extends AsyncTask<String, Void, FeiraModel[]>{
     private ProgressDialog progressDialog;
 
-    public RestFeiraAddTask(Context context) {
+    public RestFeiraTask(Context context) {
         progressDialog = new ProgressDialog(context);
     }
 
     @Override
-    protected Boolean doInBackground(Object... params) {
+    protected FeiraModel[] doInBackground(String... params) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
 
-        try {
-            restTemplate.postForObject((String) params[0], params[1], FeiraModel[].class);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        return restTemplate.getForObject(params[0], FeiraModel[].class);
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("Salvando Local");
+        progressDialog.setMessage("Procurando Locais");
         progressDialog.show();
     }
 
     @Override
-    protected void onPostExecute(Boolean result) {
+    protected void onPostExecute(FeiraModel[] result) {
         super.onPostExecute(result);
         progressDialog.dismiss();
     }

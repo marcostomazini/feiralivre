@@ -1,4 +1,4 @@
-package com.example.hellomap;
+package com.arquitetaweb.feira;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -8,8 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import com.arquitetaweb.feira.dto.FeiraModel;
-import com.com.arquitetaweb.feira.enummodel.PeriodEnum;
-import com.example.hellomap.R;
+import com.arquitetaweb.feira.enummodel.PeriodEnum;
 
 /**
  * Created by publisoft on 31/07/2014.
