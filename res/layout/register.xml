@@ -4,21 +4,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
-
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:id="@+id/editTitle" android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/textView2"/>
+            android:id="@+id/editTitle"
+            android:layout_below="@+id/textView" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" android:layout_alignRight="@+id/btnsalvar"
+            android:layout_alignEnd="@+id/btnsalvar"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:id="@+id/editInfo" android:layout_below="@+id/editTitle"
-            android:layout_alignParentRight="true" android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@+id/textView2"/>
+            android:id="@+id/editInfo"
+            android:layout_below="@+id/textView2" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
     <RadioGroup
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -59,22 +60,20 @@
             android:layout_height="wrap_content"
             android:text="Titulo"
             android:id="@+id/textView"
-            android:layout_above="@+id/editInfo" android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Informação"
             android:id="@+id/textView2"
-            android:layout_alignBottom="@+id/editInfo" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/editTitle" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Salvar"
             android:id="@+id/btnsalvar"
-            android:layout_below="@+id/radiogroup" android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_below="@+id/radiogroup" android:layout_centerHorizontal="true"/>
 </RelativeLayout>
 

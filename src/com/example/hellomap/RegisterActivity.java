@@ -3,17 +3,13 @@ package com.example.hellomap;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import com.arquitetaweb.feira.dto.FeiraModel;
 import com.com.arquitetaweb.feira.enummodel.PeriodEnum;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.hellomap.R;
 
 /**
  * Created by publisoft on 31/07/2014.
@@ -24,7 +20,6 @@ public class RegisterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-
         feira = (FeiraModel) getIntent().getSerializableExtra("feira");
 
 
@@ -62,7 +57,7 @@ public class RegisterActivity extends Activity {
                         break;
                 }
 
-                AsyncTask<Object, Void, Boolean> task = new RestFeiraAddTask().execute("https://feiralivre.herokuapp.com/api/feira", feira);
+                AsyncTask<Object, Void, Boolean> task = new RestFeiraAddTask((RegisterActivity)v.getContext()).execute("https://feiralivre.herokuapp.com/api/feira", feira);
                 finish();
             }
         });

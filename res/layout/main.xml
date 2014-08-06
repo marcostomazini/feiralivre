@@ -24,24 +24,28 @@ https://developers.google.com/maps/documentation/android/map#using_xml_attribute
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Manhã"
+                android:textColor="#FFFFFF"
                 android:id="@+id/checkManha" android:layout_alignParentTop="true"
                 android:checked="true"/>
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tarde"
+                android:textColor="#FFFFFF"
                 android:id="@+id/checkTarde"
                 android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkManha"/>
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Noite"
+                android:textColor="#FFFFFF"
                 android:id="@+id/checkNoite"
                 android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkTarde"/>
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Madrugada"
+                android:textColor="#FFFFFF"
                 android:id="@+id/checkMadrugada"
                 android:checked="true" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkNoite"/>
     </LinearLayout>

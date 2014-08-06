@@ -1,7 +1,8 @@
 package com.example.hellomap;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,17 +11,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.arquitetaweb.feira.dto.FeiraModel;
 import com.com.arquitetaweb.feira.enummodel.PeriodEnum;
+import com.example.hellomap.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
-
-import javax.xml.parsers.FactoryConfigurationError;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends FragmentActivity {
     private GoogleMap mMap;
@@ -49,6 +46,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    carregarListaDeFeiras();
                     carregarListaDeFeiras(PeriodEnum.Manha);
                 } else {
                     mMap.clear();
@@ -129,7 +127,7 @@ public class MainActivity extends FragmentActivity {
             marker.remove();
         }
 
-        AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask().execute("https://feiralivre.herokuapp.com/api/feira");
+        AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/feira");
         try {
             feiras = task.get();
             for (FeiraModel feira : feiras) {
@@ -202,6 +200,8 @@ public class MainActivity extends FragmentActivity {
                     .visible(true));
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17.0f));
+
+            marker.showInfoWindow();
         }
     };
 
@@ -253,4 +253,30 @@ public class MainActivity extends FragmentActivity {
         carregarListaDeFeiras();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.pgtaSair)
+                    .setCancelable(false)
+                    .setPositiveButton("Sim",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    MainActivity.super.onBackPressed();
+                                }
+                            })
+                    .setNegativeButton("Não",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
