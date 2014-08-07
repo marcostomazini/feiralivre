@@ -3,6 +3,7 @@ package com.arquitetaweb.feira;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -45,7 +46,6 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    carregarListaDeFeiras();
                     carregarListaDeFeiras(PeriodEnum.Manha);
                 } else {
                     mMap.clear();
@@ -130,7 +130,6 @@ public class MainActivity extends FragmentActivity {
         try {
             feiras = task.get();
             for (FeiraModel feira : feiras) {
-
                 MarkerOptions mkO = new MarkerOptions()
                         .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
                                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
@@ -151,6 +150,7 @@ public class MainActivity extends FragmentActivity {
                 MarkerOptions mkO = new MarkerOptions()
                         .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
                                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
+                        //.icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
                         .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
                         .snippet(feira.getInformation())
                         .title(feira.getDescription());
@@ -163,7 +163,7 @@ public class MainActivity extends FragmentActivity {
     private float getColor(PeriodEnum period) {
         switch (period) {
             case Madrugada:
-                return BitmapDescriptorFactory.HUE_AZURE;
+                return BitmapDescriptorFactory.HUE_ORANGE;
             case Manha:
                 return BitmapDescriptorFactory.HUE_BLUE;
             case Tarde:
