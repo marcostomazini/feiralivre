@@ -144,6 +144,24 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void carregarPatrocinadores() {
+        AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/patrocinadores");
+        try {
+            feiras = task.get();
+            for (FeiraModel patrocinio : feiras) {
+                MarkerOptions mkO = new MarkerOptions()
+                        .position(new LatLng(patrocinio.getLatitude(), patrocinio.getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
+                        .snippet(patrocinio.getInformation())
+                        .title(patrocinio.getDescription());
+
+                mMap.addMarker(mkO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void carregarListaDeFeiras(PeriodEnum period) {
         for (FeiraModel feira : feiras) {
             if (feira.getPeriod().equals(period)) {
