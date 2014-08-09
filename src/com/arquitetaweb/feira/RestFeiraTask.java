@@ -4,17 +4,25 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import com.arquitetaweb.feira.dto.FeiraModel;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 /**
  * Created by Marcos on 04/08/2014.
  */
 
 public class RestFeiraTask extends AsyncTask<String, Void, FeiraModel[]>{
+    private AsyncTaskListener callback;
     private ProgressDialog progressDialog;
 
     public RestFeiraTask(Context context) {
+        this.callback = (AsyncTaskListener) context;
         progressDialog = new ProgressDialog(context);
     }
 
@@ -23,7 +31,8 @@ public class RestFeiraTask extends AsyncTask<String, Void, FeiraModel[]>{
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
 
-        return restTemplate.getForObject(params[0], FeiraModel[].class);
+        FeiraModel[] feiras =  restTemplate.getForObject(params[0], FeiraModel[].class);
+        return feiras;
     }
 
     @Override
@@ -37,6 +46,7 @@ public class RestFeiraTask extends AsyncTask<String, Void, FeiraModel[]>{
     @Override
     protected void onPostExecute(FeiraModel[] result) {
         super.onPostExecute(result);
+        callback.onTaskComplete(result);
         progressDialog.dismiss();
     }
 }
