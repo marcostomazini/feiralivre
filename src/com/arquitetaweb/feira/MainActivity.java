@@ -137,7 +137,7 @@ public class MainActivity extends FragmentActivity implements
         if (marker != null) { // remove marcador de inserção
             marker.remove();
         }
-        AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/feira");
+        new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/feira");
     }
 
     private void carregarPatrocinadores() {

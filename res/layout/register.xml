@@ -9,6 +9,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:id="@+id/editTitle"
+            android:maxLength="30"
             android:layout_below="@+id/textView" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" android:layout_alignRight="@+id/btnsalvar"
             android:layout_alignEnd="@+id/btnsalvar"/>
@@ -17,6 +18,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:id="@+id/editInfo"
+            android:maxLength="100"
             android:layout_below="@+id/textView2" android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>

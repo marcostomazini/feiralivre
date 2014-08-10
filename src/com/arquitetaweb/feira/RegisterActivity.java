@@ -10,6 +10,8 @@ import android.widget.RadioGroup;
 import com.arquitetaweb.feira.dto.FeiraModel;
 import com.arquitetaweb.feira.enummodel.PeriodEnum;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by publisoft on 31/07/2014.
  */
@@ -20,7 +22,6 @@ public class RegisterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
         feira = (FeiraModel) getIntent().getSerializableExtra("feira");
-
 
         Button salvar = (Button)findViewById(R.id.btnsalvar);
         salvar.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +58,15 @@ public class RegisterActivity extends Activity {
                 }
 
                 AsyncTask<Object, Void, Boolean> task = new RestFeiraAddTask((RegisterActivity)v.getContext()).execute("https://feiralivre.herokuapp.com/api/feira", feira);
-                finish();
+                try {
+                    if (task.get()) {
+                        finish();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
