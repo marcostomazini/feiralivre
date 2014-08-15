@@ -10,17 +10,25 @@
             android:singleLine="true"
             android:id="@+id/editTitle"
             android:maxLength="30"
-            android:layout_below="@+id/textView" android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" android:layout_alignRight="@+id/btnsalvar"
-            android:layout_alignEnd="@+id/btnsalvar"/>
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView"
+            android:layout_alignParentLeft="true" android:layout_alignRight="@+id/checkSex"
+            android:layout_alignEnd="@+id/checkSex"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:id="@+id/editInfo"
             android:maxLength="100"
-            android:layout_below="@+id/textView2" android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView2" android:layout_alignRight="@+id/checkSex"
+            android:layout_alignEnd="@+id/checkSex" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dom"
+            android:id="@+id/checkDom"
+            android:checked="false" android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
     <RadioGroup
             android:layout_width="fill_parent"
@@ -62,7 +70,7 @@
             android:layout_height="wrap_content"
             android:text="Titulo"
             android:id="@+id/textView"
-            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/checkDom" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
     <TextView
             android:layout_width="wrap_content"
@@ -77,5 +85,40 @@
             android:text="Salvar"
             android:id="@+id/btnsalvar"
             android:layout_below="@+id/radiogroup" android:layout_centerHorizontal="true"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seg"
+            android:id="@+id/checkSeg"
+            android:checked="false" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/textView2"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ter"
+            android:id="@+id/checkTer" android:layout_alignTop="@+id/checkSeg"
+            android:layout_toRightOf="@+id/checkSeg" android:checked="false"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qua"
+            android:id="@+id/checkQua"
+            android:checked="false" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkTer"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qui"
+            android:id="@+id/checkQui"
+            android:checked="false" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkQua"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sex"
+            android:id="@+id/checkSex"
+            android:checked="false" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/checkQui"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sab"
+            android:id="@+id/checkSab" android:layout_above="@+id/textView" android:layout_toRightOf="@+id/checkSex"/>
 </RelativeLayout>
 

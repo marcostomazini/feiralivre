@@ -5,11 +5,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import com.arquitetaweb.feira.dto.FeiraModel;
+import com.arquitetaweb.feira.enummodel.DayWeekEnum;
 import com.arquitetaweb.feira.enummodel.PeriodEnum;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -34,6 +38,9 @@ public class RegisterActivity extends Activity {
                 EditText information = (EditText)findViewById(R.id.editInfo);
                 feira.setInformation(information.getText().toString());
 
+                List<DayWeekEnum> dias = getDayWeekEnums();
+                feira.setDays(dias);
+
                 RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radiogroup);
                 int radioButtonID = radioGroup.getCheckedRadioButtonId();
                 View radioButton = radioGroup.findViewById(radioButtonID);
@@ -41,19 +48,19 @@ public class RegisterActivity extends Activity {
 
                 switch (idx) {
                     case 0:
-                        feira.setPeriod(PeriodEnum.Manha);
+                        feira.setPeriod(PeriodEnum.MANHA);
                         break;
                     case 1:
-                        feira.setPeriod(PeriodEnum.Tarde);
+                        feira.setPeriod(PeriodEnum.TARDE);
                         break;
                     case 2:
-                        feira.setPeriod(PeriodEnum.Noite);
+                        feira.setPeriod(PeriodEnum.NOITE);
                         break;
                     case 3:
-                        feira.setPeriod(PeriodEnum.Madrugada);
+                        feira.setPeriod(PeriodEnum.MADRUGADA);
                         break;
                     default:
-                        feira.setPeriod(PeriodEnum.Manha);
+                        feira.setPeriod(PeriodEnum.MANHA);
                         break;
                 }
 
@@ -67,6 +74,39 @@ public class RegisterActivity extends Activity {
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
+            }
+
+            private List<DayWeekEnum> getDayWeekEnums() {
+                CheckBox checkDom = (CheckBox)findViewById(R.id.checkDom);
+                CheckBox checkSeg = (CheckBox)findViewById(R.id.checkSeg);
+                CheckBox checkTer = (CheckBox)findViewById(R.id.checkTer);
+                CheckBox checkQua = (CheckBox)findViewById(R.id.checkQua);
+                CheckBox checkQui = (CheckBox)findViewById(R.id.checkQui);
+                CheckBox checkSex = (CheckBox)findViewById(R.id.checkSex);
+                CheckBox checkSab = (CheckBox)findViewById(R.id.checkSab);
+                List<DayWeekEnum> dias = new ArrayList<DayWeekEnum>();
+                if (checkDom.isChecked()) {
+                    dias.add(DayWeekEnum.DOMINGO);
+                }
+                if (checkSeg.isChecked()) {
+                    dias.add(DayWeekEnum.SEGUNDA);
+                }
+                if (checkTer.isChecked()) {
+                    dias.add(DayWeekEnum.TERCA);
+                }
+                if (checkQua.isChecked()) {
+                    dias.add(DayWeekEnum.QUARTA);
+                }
+                if (checkQui.isChecked()) {
+                    dias.add(DayWeekEnum.QUINTA);
+                }
+                if (checkSex.isChecked()) {
+                    dias.add(DayWeekEnum.SEXTA);
+                }
+                if (checkSab.isChecked()) {
+                    dias.add(DayWeekEnum.SABADO);
+                }
+                return dias;
             }
         });
 

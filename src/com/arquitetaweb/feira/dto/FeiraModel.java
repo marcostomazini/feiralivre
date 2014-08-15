@@ -1,10 +1,9 @@
 package com.arquitetaweb.feira.dto;
 
 import com.arquitetaweb.feira.enummodel.*;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 /**
@@ -83,6 +82,22 @@ public class FeiraModel implements Serializable {
         this.latitude = latitude;
     }
 
+    public Boolean getAds() {
+        return ads;
+    }
+
+    public void setAds(Boolean ads) {
+        this.ads = ads;
+    }
+
+    public List<DayWeekEnum> getDays() {
+        return days;
+    }
+
+    public void setDays(List<DayWeekEnum> days) {
+        this.days = days;
+    }
+
     private String image_url;
 
     private String url;
@@ -98,4 +113,8 @@ public class FeiraModel implements Serializable {
     private PeriodEnum period;
 
     private Boolean confirmed;
+
+    private Boolean ads;
+
+    private List<DayWeekEnum> days;
 }

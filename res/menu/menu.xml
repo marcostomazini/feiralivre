@@ -4,7 +4,17 @@
           android:icon="@drawable/ic_launcher"
           android:title="Rota"
           android:showAsAction="ifRoom"/>
+    <item android:id="@+id/routeapi"
+          android:icon="@drawable/ic_launcher"
+          android:title="Rota Api"
+          android:showAsAction="ifRoom"/>
     <item android:id="@+id/help"
           android:icon="@drawable/ic_launcher"
           android:title="Ajuda" />
+    <item
+            android:id="@+id/menu_item_share"
+            android:showAsAction="ifRoom"
+            android:title="Share"
+            android:actionProviderClass=
+                    "android.widget.ShareActionProvider" />
 </menu>

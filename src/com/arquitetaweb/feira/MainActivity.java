@@ -5,18 +5,18 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.*;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import com.arquitetaweb.feira.dto.FeiraModel;
 import com.arquitetaweb.feira.enummodel.PeriodEnum;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,15 +30,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MainActivity extends FragmentActivity implements
         GooglePlayServicesClient.ConnectionCallbacks,
@@ -49,6 +45,9 @@ public class MainActivity extends FragmentActivity implements
     private FeiraModel[] feiras;
     private LatLng locationSelected;
     private Polyline polyline;
+    private List<Marker> patrocinios;
+    private Map<Marker, PeriodEnum> feirasPontos;
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +55,8 @@ public class MainActivity extends FragmentActivity implements
         setContentView(R.layout.main);
 
         mLocationClient = new LocationClient(this, this, this);
+        patrocinios = new ArrayList<Marker>();
+        feirasPontos = new HashMap<Marker, PeriodEnum>();
 
         setUpMapIfNeeded();
         //mMap.setOnMyLocationChangeListener(myLocationChangeListener);
@@ -76,56 +77,28 @@ public class MainActivity extends FragmentActivity implements
         checkManha.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    carregarListaDeFeiras(PeriodEnum.Manha);
-                } else {
-                    mMap.clear();
-                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
-                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
-                    if (checkMadrugada.isChecked()) carregarListaDeFeiras(PeriodEnum.Madrugada);
-                }
+                mostrarListaDeFeiras(PeriodEnum.MANHA, isChecked);
             }
         });
 
         checkTarde.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    carregarListaDeFeiras(PeriodEnum.Tarde);
-                } else {
-                    mMap.clear();
-                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
-                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
-                    if (checkMadrugada.isChecked()) carregarListaDeFeiras(PeriodEnum.Madrugada);
-                }
+                mostrarListaDeFeiras(PeriodEnum.TARDE, isChecked);
             }
         });
 
         checkNoite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    carregarListaDeFeiras(PeriodEnum.Noite);
-                } else {
-                    mMap.clear();
-                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
-                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
-                    if (checkMadrugada.isChecked()) carregarListaDeFeiras(PeriodEnum.Madrugada);
-                }
+                mostrarListaDeFeiras(PeriodEnum.NOITE, isChecked);
             }
         });
 
         checkMadrugada.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    carregarListaDeFeiras(PeriodEnum.Madrugada);
-                } else {
-                    mMap.clear();
-                    if (checkTarde.isChecked()) carregarListaDeFeiras(PeriodEnum.Tarde);
-                    if (checkNoite.isChecked()) carregarListaDeFeiras(PeriodEnum.Noite);
-                    if (checkManha.isChecked()) carregarListaDeFeiras(PeriodEnum.Manha);
-                }
+                mostrarListaDeFeiras(PeriodEnum.MADRUGADA, isChecked);
             }
         });
     }
@@ -156,48 +129,30 @@ public class MainActivity extends FragmentActivity implements
     }
 
     private void carregarPatrocinadores() {
-        AsyncTask<String, Void, FeiraModel[]> task = new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/patrocinadores");
-        try {
-            /*feiras = task.get();
-            for (FeiraModel patrocinio : feiras) {
-                MarkerOptions mkO = new MarkerOptions()
-                        .position(new LatLng(patrocinio.getLatitude(), patrocinio.getLongitude()))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
-                        .snippet(patrocinio.getInformation())
-                        .title(patrocinio.getDescription());
-
-                mMap.addMarker(mkO);
-            }*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new RestFeiraTask(this).execute("https://feiralivre.herokuapp.com/api/patrocinadores");
     }
 
-    private void carregarListaDeFeiras(PeriodEnum period) {
-        for (FeiraModel feira : feiras) {
-            if (feira.getPeriod().equals(period)) {
-                MarkerOptions mkO = new MarkerOptions()
-                        .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
-                                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marco_veio))
-                        //.icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
-                        .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
-                        .snippet(feira.getInformation())
-                        .title(feira.getDescription());
-
-                mMap.addMarker(mkO);
+    private void mostrarListaDeFeiras(PeriodEnum period, Boolean isChecked) {
+        Set set = feirasPontos.entrySet();
+        Iterator i = set.iterator();
+        while (i.hasNext()) {
+            Map.Entry me = (Map.Entry) i.next();
+            Marker mk = (Marker) me.getKey();
+            if (me.getValue().equals(period)) {
+                mk.setVisible(isChecked ? true : false);
             }
         }
     }
 
     private float getColor(PeriodEnum period) {
         switch (period) {
-            case Madrugada:
+            case MADRUGADA:
                 return BitmapDescriptorFactory.HUE_ORANGE;
-            case Manha:
+            case MANHA:
                 return BitmapDescriptorFactory.HUE_BLUE;
-            case Tarde:
+            case TARDE:
                 return BitmapDescriptorFactory.HUE_GREEN;
-            case Noite:
+            case NOITE:
                 return BitmapDescriptorFactory.HUE_ROSE;
         }
         return BitmapDescriptorFactory.HUE_BLUE;
@@ -211,8 +166,6 @@ public class MainActivity extends FragmentActivity implements
             if(mMap != null){
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
                 mMap.setOnMyLocationChangeListener(null);
-                carregarListaDeFeiras();
-                carregarPatrocinadores();
             }
         }
     };
@@ -239,9 +192,13 @@ public class MainActivity extends FragmentActivity implements
         @Override
         public void onCameraChange(CameraPosition cameraPosition) {
             if (cameraPosition.zoom > 15.0f) {
-                Toast.makeText(getBaseContext(), "Show", Toast.LENGTH_SHORT).show();
+                for (Marker mk: patrocinios) {
+                    mk.setVisible(true);
+                }
             } else {
-                Toast.makeText(getBaseContext(), "Hide", Toast.LENGTH_SHORT).show();
+                for (Marker mk: patrocinios) {
+                    mk.setVisible(false);
+                }
             }
         }
     };
@@ -265,6 +222,7 @@ public class MainActivity extends FragmentActivity implements
                 feiraObj.setLatitude(marker.getPosition().latitude);
                 feiraObj.setLongitude(marker.getPosition().longitude);
                 feiraObj.setConfirmed(false);
+                feiraObj.setAds(false);
 
                 intent.putExtra("feira", feiraObj);
                 startActivityForResult(intent, 100);
@@ -369,12 +327,13 @@ public class MainActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14.0f);
         mMap.animateCamera(cameraUpdate);
         carregarListaDeFeiras();
+        carregarPatrocinadores();
         //mLocationClient.disconnect();
     }
 
     @Override
     public void onDisconnected() {
-    // Display the connection status
+        // Display the connection status
         Toast.makeText(this, "Disconnected. Please re-connect.",
                 Toast.LENGTH_SHORT).show();
     }
@@ -400,13 +359,42 @@ public class MainActivity extends FragmentActivity implements
     public void onTaskComplete(FeiraModel[] result) {
         feiras = result;
         for (FeiraModel feira : feiras) {
-            MarkerOptions mkO = new MarkerOptions()
-                    .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
-                    .snippet(feira.getInformation())
-                    .title(feira.getDescription());
 
-            mMap.addMarker(mkO);
+            if (feira.getAds().equals(false)) {
+                MarkerOptions mkO = new MarkerOptions()
+                        .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
+                        .icon(BitmapDescriptorFactory.defaultMarker(getColor(feira.getPeriod())))
+                        .snippet(feira.getInformation())
+                        .title(feira.getDescription());
+
+                feirasPontos.put(mMap.addMarker(mkO), feira.getPeriod());
+            } else {
+
+                /*Bitmap bmp = null;
+                try {
+                    URL url = new URL("http://marcostomazini.me/images/myphoto.jpg");
+                    try {
+                        bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }*/
+
+                MarkerOptions mkO = new MarkerOptions()
+                        .position(new LatLng(feira.getLatitude(), feira.getLongitude()))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                        //.icon(BitmapDescriptorFactory.fromBitmap(bmp))
+                        .snippet(feira.getInformation())
+                        .title(feira.getDescription());
+
+                patrocinios.add(mMap.addMarker(mkO));
+
+                for (Marker patrocinio : patrocinios) {
+                    patrocinio.showInfoWindow();
+                }
+            }
         }
     }
 
@@ -414,6 +402,12 @@ public class MainActivity extends FragmentActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        // Fetch and store ShareActionProvider
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+
         return true;
     }
 
@@ -432,8 +426,24 @@ public class MainActivity extends FragmentActivity implements
                 downloadTask.execute(url);
 
                 return true;
+            case R.id.routeapi:
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + locationSelected.latitude + "," + locationSelected.longitude));
+                startActivity(intent);
+                //for (Marker mk: feirasPontos) {
+                //mk.setVisible(false);
+                //}
+                return true;
             case R.id.help:
-                //showHelp();
+                initShareIntent("face");
+                //initShareIntent("twi");
+                /*initShareIntent("twi");
+                if facebook:
+
+            initShareIntent("face");
+                if mail:
+
+            initShareIntent("mail"); // or "gmail"
+                */
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -592,6 +602,32 @@ public class MainActivity extends FragmentActivity implements
                 polyline.remove();
             }
             polyline = mMap.addPolyline(lineOptions);
+        }
+    }
+
+    private void initShareIntent(String type) {
+        boolean found = false;
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+
+        // gets the list of intents that can be loaded.
+        List<ResolveInfo> resInfo = getPackageManager().queryIntentActivities(share, 0);
+        if (!resInfo.isEmpty()){
+            for (ResolveInfo info : resInfo) {
+                if (info.activityInfo.packageName.toLowerCase().contains(type) ||
+                        info.activityInfo.name.toLowerCase().contains(type) ) {
+                    share.putExtra(Intent.EXTRA_SUBJECT,  "subject");
+                    share.putExtra(Intent.EXTRA_TEXT,     "your text");
+                    //share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(myPath)) ); // Optional, just if you wanna share an image.
+                    share.setPackage(info.activityInfo.packageName);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                return;
+
+            startActivity(Intent.createChooser(share, "Select"));
         }
     }
 }
